@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HR Digital Photo Gallery</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6f8;font-family:Arial,Helvetica,sans-serif;color:#172b4d}
+.gallery{width:min(100%,1100px);margin:0 auto;padding:18px}
+h1{text-align:center;margin:8px 0 18px;font-size:clamp(22px,4vw,34px)}
+.carousel{position:relative;overflow:hidden;background:#111;border-radius:12px;box-shadow:0 5px 22px #0002}
+.track{display:flex;transition:transform .45s ease}
+.slide{flex:0 0 100%;display:flex;align-items:center;justify-content:center;min-width:0;height:min(68vh,650px);background:#111}
+.slide img{width:100%;height:100%;object-fit:contain;display:block}
+.nav{position:absolute;top:50%;transform:translateY(-50%);border:0;border-radius:50%;width:48px;height:48px;background:#003366dd;color:white;font-size:30px;cursor:pointer;display:grid;place-items:center}
+.prev{left:12px} .next{right:12px}
+.dots{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:16px 8px}
+.dot{width:12px;height:12px;border:0;border-radius:50%;background:#b9c3d0;cursor:pointer;padding:0}
+.dot[aria-current="true"]{background:#003366;transform:scale(1.2)}
+.counter{text-align:center;font-size:14px;color:#52657d;padding-bottom:10px}
+@media(max-width:600px){.gallery{padding:8px}.slide{height:55vh}.nav{width:40px;height:40px;font-size:25px}}
+</style>
+</head>
+<body>
+<main class="gallery">
+<h1>HR Digital Photo Gallery</h1>
+<div class="carousel" aria-label="Photo carousel">
+<div class="track" id="track">
+      <div class="slide"><img src="https://raw.githubusercontent.com/HRD-UC/hrdigitalcarrousel/main/646113849_122315333192212562_4580104909975381900_n.jpg" alt="HR Digital Gallery photo 1" loading="eager"></div>
+      <div class="slide"><img src="https://raw.githubusercontent.com/HRD-UC/hrdigitalcarrousel/main/646141811_122315336582212562_1067718260305243299_n.jpg" alt="HR Digital Gallery photo 2" loading="lazy"></div>
+      <div class="slide"><img src="https://raw.githubusercontent.com/HRD-UC/hrdigitalcarrousel/main/646324949_122315335298212562_7151922167229392252_n.jpg" alt="HR Digital Gallery photo 3" loading="lazy"></div>
+      <div class="slide"><img src="https://raw.githubusercontent.com/HRD-UC/hrdigitalcarrousel/main/646337246_122315333132212562_5218527784562604351_n.jpg" alt="HR Digital Gallery photo 4" loading="lazy"></div>
+      <div class="slide"><img src="https://raw.githubusercontent.com/HRD-UC/hrdigitalcarrousel/main/646350824_122315336468212562_3801472380667226567_n.jpg" alt="HR Digital Gallery photo 5" loading="lazy"></div>
+      <div class="slide"><img src="https://raw.githubusercontent.com/HRD-UC/hrdigitalcarrousel/main/646356969_122315336390212562_7225324103123805288_n.jpg" alt="HR Digital Gallery photo 6" loading="lazy"></div>
+      <div class="slide"><img src="https://raw.githubusercontent.com/HRD-UC/hrdigitalcarrousel/main/646380014_122315335130212562_7999395207946926459_n.jpg" alt="HR Digital Gallery photo 7" loading="lazy"></div>
+      <div class="slide"><img src="https://raw.githubusercontent.com/HRD-UC/hrdigitalcarrousel/main/646380828_122315334386212562_368249324308917749_n.jpg" alt="HR Digital Gallery photo 8" loading="lazy"></div>
+      <div class="slide"><img src="https://raw.githubusercontent.com/HRD-UC/hrdigitalcarrousel/main/646496626_122315333468212562_1106956336105939353_n.jpg" alt="HR Digital Gallery photo 9" loading="lazy"></div>
+      <div class="slide"><img src="https://raw.githubusercontent.com/HRD-UC/hrdigitalcarrousel/main/646988459_122315336318212562_5337614703965243133_n.jpg" alt="HR Digital Gallery photo 10" loading="lazy"></div>
+</div>
+<button class="nav prev" id="prev" aria-label="Previous photo">&#8249;</button>
+<button class="nav next" id="next" aria-label="Next photo">&#8250;</button>
+</div>
+<div class="dots" id="dots" aria-label="Choose photo"></div>
+<div class="counter" id="counter" aria-live="polite">1 / 10</div>
+</main>
+<script>
+(() => {
+ const track=document.getElementById('track');
+ const slides=[...track.children];
+ const dotsBox=document.getElementById('dots');
+ const counter=document.getElementById('counter');
+ let index=0;
+ slides.forEach((_,i)=>{
+   const b=document.createElement('button');
+   b.className='dot'; b.setAttribute('aria-label','Go to photo '+(i+1));
+   b.addEventListener('click',()=>show(i));
+   dotsBox.appendChild(b);
+ });
+ const dots=[...dotsBox.children];
+ function show(n){
+   index=(n+slides.length)%slides.length;
+   track.style.transform='translateX(-'+(index*100)+'%)';
+   dots.forEach((d,i)=>d.setAttribute('aria-current',i===index?'true':'false'));
+   counter.textContent=(index+1)+' / '+slides.length;
+ }
+ document.getElementById('prev').addEventListener('click',()=>show(index-1));
+ document.getElementById('next').addEventListener('click',()=>show(index+1));
+ let startX=0;
+ track.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;},{passive:true});
+ track.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>45)show(index+(dx<0?1:-1));},{passive:true});
+ document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')show(index-1);if(e.key==='ArrowRight')show(index+1);});
+ show(0);
+})();
+</script>
+</body>
+</html>
